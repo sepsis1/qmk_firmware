@@ -19,8 +19,7 @@ enum layers {
     _QWERTY = 0,
     _NUM,
     _SYM,
-    _FUNCTION=3,
-    _ADJUST,
+    _MOUSE=3,
 };
 
 //enum custom_keycodes {
@@ -56,8 +55,7 @@ void pointing_device_init_user(void) {
 
 #define SYM      MO(_SYM)
 #define NUM      MO(_NUM)
-#define FKEYS    MO(_FUNCTION)
-#define ADJUST   MO(_ADJUST)
+#define MOUSE    MO(_MOUSE)
 
 #define CTL_ESC  MT(MOD_LCTL, KC_ESC)
 #define CTL_QUOT MT(MOD_RCTL, KC_QUOTE)
@@ -80,7 +78,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
  * |Ctrl/Esc|   Z  |   X  |   C  |   V  |   B  |      |  Sym |  | Sym  |  XXX |   N  |   M  | ,  < | . >  | /  ? |   Del  |
  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
- *                        |Adjust| LGUI | LAlt | Space| Num  |  | Num  | Enter| AltGr| RGUI | Menu |
+ *                        |      | LGUI | LAlt | Space| Num  |  | Num  | Enter| AltGr| RGUI | Menu |
  *                        |      |      |      |      |      |  |      |      |      |      |      |
  *                        `----------------------------------'  `----------------------------------'
  */
@@ -88,7 +86,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      KC_TAB  , KC_Q ,  KC_W   ,  KC_E  ,   KC_R ,   KC_T ,                                  KC_Y,   KC_U ,  KC_I ,   KC_O ,  KC_P , KC_BSPC,
      KC_LSFT , KC_A ,  KC_S   ,  KC_D  ,   KC_F ,   KC_G ,                                  KC_H,   KC_J ,  KC_K ,   KC_L ,KC_SCLN, KC_QUOT,
      CTL_ESC , KC_Z ,  KC_X   ,  KC_C  ,   KC_V ,   KC_B , KC_LBRC, SYM ,     SYM, KC_NO  , KC_N,   KC_M ,KC_COMM, KC_DOT ,KC_SLSH, KC_DEL ,
-                                ADJUST , KC_LGUI, KC_LALT, KC_SPC , NUM ,     NUM, KC_ENT ,KC_RALT, KC_RGUI, KC_APP
+                                 KC_NO , KC_LGUI, KC_LALT, KC_SPC , NUM ,     NUM, KC_ENT ,KC_RALT, KC_RGUI, KC_APP
     ),
 
 
@@ -135,20 +133,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
 /*
- * Function Layer: Function keys
+ * Mouse Layer: Mouse keys
  *
  * ,-------------------------------------------.                              ,-------------------------------------------.
- * |        |  F9  | F10  | F11  | F12  |      |                              |      |      |      |      |      |        |
+ * |        |      |      |      |      |      |                              |      |      |      |      |      |        |
  * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
- * |        |  F5  |  F6  |  F7  |  F8  |      |                              |      | Shift| Ctrl |  Alt |  GUI |        |
+ * |        |      |      |      |      |      |                              |      |      |      |      |      |        |
  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
- * |        |  F1  |  F2  |  F3  |  F4  |      |      |      |  |      |      |      |      |      |      |      |        |
+ * |        |      |      |      |      |      |      |      |  |      |      |      |      |      |      |      |        |
  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
  *                        |      |      |      |      |      |  |      |      |      |      |      |
  *                        |      |      |      |      |      |  |      |      |      |      |      |
  *                        `----------------------------------'  `----------------------------------'
  */
-    [_FUNCTION] = LAYOUT(
+    [_MOUSE] = LAYOUT(
       _______,  KC_F9 ,  KC_F10,  KC_F11,  KC_F12, _______,                                     _______, _______, _______, _______, _______, _______,
       _______,  KC_F5 ,  KC_F6 ,  KC_F7 ,  KC_F8 , _______,                                     _______, KC_RSFT, KC_RCTL, KC_LALT, KC_RGUI, _______,
       _______,  KC_F1 ,  KC_F2 ,  KC_F3 ,  KC_F4 , _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
@@ -212,11 +210,8 @@ bool oled_task_user(void) {
             case _SYM:
                 oled_write_P(PSTR("Sym\n"), false);
                 break;
-            case _FUNCTION:
-                oled_write_P(PSTR("Function\n"), false);
-                break;
-            case _ADJUST:
-                oled_write_P(PSTR("Adjust\n"), false);
+            case _MOUSE:
+                oled_write_P(PSTR("Mouse\n"), false);
                 break;
             default:
                 oled_write_P(PSTR("Undefined\n"), false);
