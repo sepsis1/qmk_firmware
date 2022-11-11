@@ -22,33 +22,13 @@ enum layers {
     _MOUSE=3,
 };
 
-//enum custom_keycodes {
-//    DRAG_SCROLL = SAFE_RANGE,
-//};
-
-//bool set_scrolling = false;
 
 void pointing_device_init_user(void) {
     set_auto_mouse_layer(3); // only required if AUTO_MOUSE_DEFAULT_LAYER is not set to index of <mouse_layer>
     set_auto_mouse_enable(true);         // always required before the auto mouse feature will work
 }
 
-//report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
-//    if (set_scrolling) {
-//        mouse_report.h = mouse_report.x;
-//        mouse_report.v = mouse_report.y;
-//        mouse_report.x = 0;
-//        mouse_report.y = 0;
-//    }
-//    return mouse_report;
-//}
 
-//bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-//    if (keycode == DRAG_SCROLL && record->event.pressed) {
-//        set_scrolling = !set_scrolling;
-//    }
-//    return true;
-//}
 
 // Aliases for readability
 #define QWERTY   DF(_QWERTY)
@@ -76,7 +56,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
  * | LShift |   A  |   S  |   D  |   F  |   G  |                              |   H  |   J  |   K  |   L  | ;  : |  ' "   |
  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
- * |Ctrl/Esc|   Z  |   X  |   C  |   V  |   B  |      |  Sym |  | Sym  |  XXX |   N  |   M  | ,  < | . >  | /  ? |   Del  |
+ * |Ctrl/Esc|   Z  |   X  |   C  |   V  |   B  | DRAG |  Sym |  | Sym  |  XXX |   N  |   M  | ,  < | . >  | /  ? |   Del  |
  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
  *                        |      | LGUI | LAlt | Space| Num  |  | Num  | Enter| AltGr| RGUI | Menu |
  *                        |      |      |      |      |      |  |      |      |      |      |      |
@@ -85,7 +65,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_QWERTY] = LAYOUT(
      KC_TAB  , KC_Q ,  KC_W   ,  KC_E  ,   KC_R ,   KC_T ,                                  KC_Y,   KC_U ,  KC_I ,   KC_O ,  KC_P , KC_BSPC,
      KC_LSFT , KC_A ,  KC_S   ,  KC_D  ,   KC_F ,   KC_G ,                                  KC_H,   KC_J ,  KC_K ,   KC_L ,KC_SCLN, KC_QUOT,
-     CTL_ESC , KC_Z ,  KC_X   ,  KC_C  ,   KC_V ,   KC_B , KC_LBRC, SYM ,     SYM, KC_NO  , KC_N,   KC_M ,KC_COMM, KC_DOT ,KC_SLSH, KC_DEL ,
+     CTL_ESC , KC_Z ,  KC_X   ,  KC_C  ,   KC_V ,   KC_B , KC_BTN3, SYM ,     SYM, KC_NO  , KC_N,   KC_M ,KC_COMM, KC_DOT ,KC_SLSH, KC_DEL ,
                                  KC_NO , KC_LGUI, KC_LALT, KC_SPC , NUM ,     NUM, KC_ENT ,KC_RALT, KC_RGUI, KC_APP
     ),
 
@@ -242,20 +222,20 @@ bool oled_task_user(void) {
 #endif
 
  void keyboard_post_init_user(void) {
-    //pimoroni_trackball_set_rgbw(0,0,0,0);
-    //pointing_device_set_cpi(9000);
+    pimoroni_trackball_set_rgbw(0,0,0,0);
+    pointing_device_set_cpi(2000);
 }
 
 layer_state_t layer_state_set_user(layer_state_t state) {
     switch (get_highest_layer(state)) {
     case _QWERTY:
-        //pimoroni_trackball_set_rgbw(45,0,147,0);
+       pimoroni_trackball_set_rgbw(45,0,147,0);
         break;
     case _SYM:
-        //pimoroni_trackball_set_rgbw(0,80,0,0);
+       pimoroni_trackball_set_rgbw(0,80,0,0);
         break;
     case _NUM:
-        //pimoroni_trackball_set_rgbw(80,0,0,10);
+       pimoroni_trackball_set_rgbw(80,0,0,10);
         break;
     }
   return state;
