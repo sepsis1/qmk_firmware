@@ -15,12 +15,37 @@
  */
 #include QMK_KEYBOARD_H
 
+int cpi = 4000;
 enum layers {
     _QWERTY = 0,
     _NUM,
     _SYM,
     _MOUSE=3,
 };
+
+enum custom_keycodes {
+    CPI_UP = SAFE_RANGE,
+    CPI_DN = SAFE_RANGE,
+}
+
+bool process_record_user(uint16_t keycode, keyrecord_t* record) {
+  switch (keycode) {
+    case CPI_UP: 
+      if (record->event.pressed) {
+        cpi=cpi+1000;
+        pointing_device_set_cpi(cpi);
+      }
+      return false;
+
+    case CPI_DN:  
+      if (record->event.pressed) {
+        cpi=cpi-1000;
+        pointing_device_set_cpi(cpi);
+      }
+      return false;
+  }
+  return true;
+}
 
 
 void pointing_device_init_user(void) {
@@ -127,9 +152,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                        `----------------------------------'  `----------------------------------'
  */
     [_MOUSE] = LAYOUT(
-      _______,  KC_F9 ,  KC_F10,  KC_F11,  KC_F12, _______,                                     _______, _______, _______, _______, _______, _______,
-      _______,  KC_F5 ,  KC_F6 ,  KC_F7 ,  KC_F8 , _______,                                     _______, KC_RSFT, KC_RCTL, KC_LALT, KC_RGUI, _______,
-      _______,  KC_F1 ,  KC_F2 ,  KC_F3 ,  KC_F4 , _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+      _______, _______, _______, _______, _______, _______,                                     _______, _______, _______, _______, _______, _______,
+      _______, _______, KC_BTN2, KC_BTN3, KC_BTN1, _______,                                     _______, KC_BTN1, KC_BTN3, KC:BTN2, _______, _______,
+      _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
                                  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
     ),
 
@@ -223,7 +248,7 @@ bool oled_task_user(void) {
 
  void keyboard_post_init_user(void) {
     pimoroni_trackball_set_rgbw(0,0,0,0);
-    pointing_device_set_cpi(2000);
+    pointing_device_set_cpi(cpi);
 }
 
 layer_state_t layer_state_set_user(layer_state_t state) {
