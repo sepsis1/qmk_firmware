@@ -24,26 +24,32 @@ enum layers {
 };
 
 enum custom_keycodes {
-    CPI_UP = SAFE_RANGE,
-    CPI_DN = SAFE_RANGE,
-}
+    CPI_U = SAFE_RANGE,
+    CPI_D    = SAFE_RANGE,
+};
 
 bool process_record_user(uint16_t keycode, keyrecord_t* record) {
-  switch (keycode) {
-    case CPI_UP: 
+  if(keycode==CPI_U){
       if (record->event.pressed) {
         cpi=cpi+1000;
-        pointing_device_set_cpi(cpi);
-      }
-      return false;
-
-    case CPI_DN:  
-      if (record->event.pressed) {
-        cpi=cpi-1000;
+        if(cpi>10000){
+            cpi=10000;
+        }
         pointing_device_set_cpi(cpi);
       }
       return false;
   }
+    if(keycode==CPI_D){
+      if (record->event.pressed) {
+        cpi=cpi-1000;
+        if(cpi<1000){
+            cpi=1000;
+        }
+        pointing_device_set_cpi(cpi);
+      }
+      return false;
+    }
+
   return true;
 }
 
@@ -91,7 +97,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      KC_TAB  , KC_Q ,  KC_W   ,  KC_E  ,   KC_R ,   KC_T ,                                  KC_Y,   KC_U ,  KC_I ,   KC_O ,  KC_P , KC_BSPC,
      KC_LSFT , KC_A ,  KC_S   ,  KC_D  ,   KC_F ,   KC_G ,                                  KC_H,   KC_J ,  KC_K ,   KC_L ,KC_SCLN, KC_QUOT,
      CTL_ESC , KC_Z ,  KC_X   ,  KC_C  ,   KC_V ,   KC_B , KC_BTN3, SYM ,     SYM, KC_NO  , KC_N,   KC_M ,KC_COMM, KC_DOT ,KC_SLSH, KC_DEL ,
-                                 KC_NO , KC_LGUI, KC_LALT, KC_SPC , NUM ,     NUM, KC_ENT ,KC_RALT, KC_RGUI, KC_APP
+                                 KC_NO , KC_LGUI, KC_LALT, KC_SPC , NUM ,     NUM, KC_ENT ,KC_RALT, CPI_U, CPI_D
     ),
 
 
@@ -153,7 +159,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
     [_MOUSE] = LAYOUT(
       _______, _______, _______, _______, _______, _______,                                     _______, _______, _______, _______, _______, _______,
-      _______, _______, KC_BTN2, KC_BTN3, KC_BTN1, _______,                                     _______, KC_BTN1, KC_BTN3, KC:BTN2, _______, _______,
+      _______, _______, KC_BTN2, KC_BTN3, KC_BTN1, _______,                                     _______, KC_BTN1, KC_BTN3, KC_BTN2, _______, _______,
       _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
                                  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
     ),
@@ -254,7 +260,7 @@ bool oled_task_user(void) {
 layer_state_t layer_state_set_user(layer_state_t state) {
     switch (get_highest_layer(state)) {
     case _QWERTY:
-       pimoroni_trackball_set_rgbw(45,0,147,0);
+       pimoroni_trackball_set_rgbw(0,0,0,cpi/40);
         break;
     case _SYM:
        pimoroni_trackball_set_rgbw(0,80,0,0);
