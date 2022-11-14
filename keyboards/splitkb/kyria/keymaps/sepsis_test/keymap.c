@@ -15,6 +15,7 @@
  */
 #include QMK_KEYBOARD_H
 
+int cpi = 4000;
 
 enum layers {
     _QWERTY = 0,
@@ -25,33 +26,33 @@ enum layers {
 
 enum custom_keycodes {
     CPI_U = SAFE_RANGE,
-    CPI_D = SAFE_RANGE,
+    CPI_D    = SAFE_RANGE,
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t* record) {
   if(keycode==CPI_U){
       if (record->event.pressed) {
-        pointing_device_set_cpi(10000);
+        cpi=cpi+1000;
+        if(cpi>10000){
+            cpi=10000;
+        }
+        pointing_device_set_cpi(cpi);
       }
       return false;
   }
     if(keycode==CPI_D){
       if (record->event.pressed) {
-        pointing_device_set_cpi(1000);
+        cpi=cpi-1000;
+        if(cpi<1000){
+            cpi=1000;
+        }
+        pointing_device_set_cpi(cpi);
       }
       return false;
     }
 
   return true;
 }
-
-
-void pointing_device_init_user(void) {
-    set_auto_mouse_layer(3); // only required if AUTO_MOUSE_DEFAULT_LAYER is not set to index of <mouse_layer>
-    set_auto_mouse_enable(true);         // always required before the auto mouse feature will work
-}
-
-
 
 // Aliases for readability
 #define QWERTY   DF(_QWERTY)
@@ -89,7 +90,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      KC_TAB  , KC_Q ,  KC_W   ,  KC_E  ,   KC_R ,   KC_T ,                                  KC_Y,   KC_U ,  KC_I ,   KC_O ,  KC_P , KC_BSPC,
      KC_LSFT , KC_A ,  KC_S   ,  KC_D  ,   KC_F ,   KC_G ,                                  KC_H,   KC_J ,  KC_K ,   KC_L ,KC_SCLN, KC_QUOT,
      CTL_ESC , KC_Z ,  KC_X   ,  KC_C  ,   KC_V ,   KC_B , KC_BTN3, SYM ,     SYM, KC_NO  , KC_N,   KC_M ,KC_COMM, KC_DOT ,KC_SLSH, KC_DEL ,
-                                 KC_NO , KC_LGUI, KC_LALT, KC_SPC , NUM ,     NUM, KC_ENT ,KC_RALT, CPI_U, CPI_D
+                                 KC_NO , KC_LGUI, KC_LALT, KC_SPC , NUM ,     NUM, KC_ENT ,KC_RALT, CPI_D, CPI_U
     ),
 
 
@@ -199,7 +200,7 @@ bool oled_task_user(void) {
         // clang-format on
 
         oled_write_P(qmk_logo, false);
-        oled_write_P(PSTR("Kyria rev2.0\n\n"), false);
+        oled_write_P(PSTR("Kyria rev1.0\n\n"), false);
 
         // Host Keyboard Layer Status
         oled_write_P(PSTR("Layer: "), false);
@@ -244,25 +245,16 @@ bool oled_task_user(void) {
 }
 #endif
 
-
-report_mouse_t pointing_device_task_combined_user(report_mouse_t left_report, report_mouse_t right_report) {
-    left_report.h = left_report.x;
-    left_report.v = left_report.y;
-    left_report.x = 0;
-    left_report.y = 0;
-    return pointing_device_combine_reports(left_report, right_report);
-}
-
 layer_state_t layer_state_set_user(layer_state_t state) {
     switch (get_highest_layer(state)) {
     case _QWERTY:
-       pimoroni_trackball_set_rgbw(0,0,0,80);
+       //pimoroni_trackball_set_rgbw(0,0,0,cpi/40);
         break;
     case _SYM:
-       pimoroni_trackball_set_rgbw(0,80,0,0);
+       //pimoroni_trackball_set_rgbw(0,80,0,0);
         break;
     case _NUM:
-       pimoroni_trackball_set_rgbw(80,0,0,10);
+       //pimoroni_trackball_set_rgbw(80,0,0,10);
         break;
     }
   return state;

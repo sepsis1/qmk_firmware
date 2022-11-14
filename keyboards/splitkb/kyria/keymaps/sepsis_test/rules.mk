@@ -1,8 +1,8 @@
 OLED_ENABLE = yes
 OLED_DRIVER = SSD1306   # Enables the use of OLED displays
 POINTING_DEVICE_ENABLE = yes
-POINTING_DEVICE_DRIVER = pimoroni_trackball
-#POINTING_DEVICE_DRIVER = analog_joystick
+#POINTING_DEVICE_DRIVER = pimoroni_trackball
+POINTING_DEVICE_DRIVER = analog_joystick
 MOUSEKEY_ENABLE = yes
 #Save space
 CONSOLE_ENABLE = no
