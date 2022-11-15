@@ -25,23 +25,36 @@ enum layers {
 
 enum custom_keycodes {
     CPI_U = SAFE_RANGE,
-    CPI_D = SAFE_RANGE,
+    CPI_D
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t* record) {
-  if(keycode==CPI_U){
-      if (record->event.pressed) {
-        pointing_device_set_cpi(10000);
-      }
-      return false;
-  }
-    if(keycode==CPI_D){
-      if (record->event.pressed) {
-        pointing_device_set_cpi(1000);
-      }
-      return false;
-    }
+    switch (keycode){
+        case CPI_U:
+        if (record->event.pressed) {
+        uint16_t cpi;
+        cpi= pointing_device_get_cpi();
+        cpi=cpi+1000;
+        if(cpi>20000){
+            cpi=20000;
+        }
+        pointing_device_set_cpi(cpi);
 
+    }
+    break;
+        case CPI_D:
+        if (record->event.pressed) {
+        uint16_t cpi;
+        cpi= pointing_device_get_cpi();
+        cpi=cpi-1000;
+        if(cpi<1000){
+            cpi=1000;
+        }
+        pointing_device_set_cpi(cpi);
+
+    }
+    break;
+  }
   return true;
 }
 
@@ -199,10 +212,13 @@ bool oled_task_user(void) {
         // clang-format on
 
         oled_write_P(qmk_logo, false);
-        oled_write_P(PSTR("Kyria rev2.0\n\n"), false);
+        oled_write_P(PSTR("Kyria rev2.0\n"), false);
+        oled_write_P(PSTR("CPI:"),false);
+        oled_write(get_u16_str(pointing_device_get_cpi(),'0'),false);
+
 
         // Host Keyboard Layer Status
-        oled_write_P(PSTR("Layer: "), false);
+        oled_write_P(PSTR("\nLayer: "), false);
         switch (get_highest_layer(layer_state|default_layer_state)) {
             case _QWERTY:
                 oled_write_P(PSTR("QWERTY\n"), false);
