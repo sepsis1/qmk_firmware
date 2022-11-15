@@ -262,8 +262,8 @@ bool oled_task_user(void) {
 
 
 report_mouse_t pointing_device_task_combined_user(report_mouse_t left_report, report_mouse_t right_report) {
-    left_report.h = left_report.x;
-    left_report.v = left_report.y;
+    left_report.h = -left_report.x/2;
+    left_report.v = left_report.y/2;
     left_report.x = 0;
     left_report.y = 0;
     return pointing_device_combine_reports(left_report, right_report);
@@ -279,6 +279,9 @@ layer_state_t layer_state_set_user(layer_state_t state) {
         break;
     case _NUM:
        pimoroni_trackball_set_rgbw(80,0,0,10);
+        break;
+    case _MOUSE:
+        pimoroni_trackball_set_rgbw(120,120,0,0);
         break;
     }
   return state;
